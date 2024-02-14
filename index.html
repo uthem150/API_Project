@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>책 검색 tool</title>
+  </head>
+  <body>
+    <h2>책 검색 API</h2>
+    <input id="bookName" value="" type="text" />
+    <button id="search">검색</button>
+    <!-- 검색한 내용이 들어갈 부분 -->
+    <p></p>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      $(document).ready(() => {
+        // 버튼 클릭 이벤트 처리
+        $("#search").click(() => {
+          // ajax 사용 -  웹 페이지를 다시 로드하지 않고도 서버로부터 데이터를 가져와서 동적으로 웹 페이지를 업데이트할 수 있음.
+          $.ajax({
+            //서버로 데이터 요청
+            method: "GET",
+            url: "https://dapi.kakao.com/v3/search/book?target=title",
+            data: { query: $("#bookName").val() },
+            headers: {
+              Authorization: "KakaoAK 9085153ec0dc3a420e6205ca46b91a0f",
+            }, // 수정된 부분
+          })
+            .done(function (data) {
+              $("p").append(`<strong>${data.documents[0].title}</strong>`);
+              $("p").append(`<br>`);
+              $("p").append(`<img src="${data.documents[0].thumbnail}"/>`);
+            })
+            .fail(function (xhr, textStatus, error) {
+              console.error("요청 실패:", error);
+              // 실패 처리 로직
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
